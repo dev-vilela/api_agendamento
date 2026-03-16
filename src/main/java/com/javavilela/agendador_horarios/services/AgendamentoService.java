@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -19,23 +20,26 @@ public class AgendamentoService {
     public AgendamenteEntity salvarAgendamento(AgendamenteEntity agendamenteEntity){
 
         LocalDateTime horaAgendamento = agendamenteEntity.getDataHoraAgendamento();
-        LocalDateTime horaFim = agendamenteEntity.getDataHoraAgendamento().plusHours(1); // VERIFICA SE NÂO TEM HORA MARCADA
+        LocalDateTime horaFim = agendamenteEntity.getDataHoraAgendamento().plusMinutes(1);
 
-      AgendamenteEntity reservas =  agendamentoRepository.findByServicoAndDataHoraAgendamentoBetween(agendamenteEntity.getServico(),
-                horaAgendamento, horaFim);
+        AgendamenteEntity reservas = agendamentoRepository
+                .findByServicoAndDataHoraAgendamentoBetween(
+                        agendamenteEntity.getServico(),
+                        horaAgendamento,
+                        horaFim
+                );
 
-      if (Objects.nonNull(agendamenteEntity)){
-          throw new RuntimeException("Horário já está preenchido!");
-      }
-      return agendamentoRepository.save(agendamenteEntity);
+        if (Objects.nonNull(reservas)){
+            throw new RuntimeException("Horário já está preenchido! Tente novamente com outro horário.");
+        }
 
+        return agendamentoRepository.save(agendamenteEntity);
     }
-
     public void deletarAgendamento(LocalDateTime dataHoraAgendamento, String cliente){
         agendamentoRepository.deleteByDataHoraAgendamentoAndCliente(dataHoraAgendamento, cliente);
     }
 
-    public AgendamenteEntity buscarAgendamentosDia(LocalDate data){
+    public List<AgendamenteEntity> buscarAgendamentosDia(LocalDate data){
         LocalDateTime primeiroHoraDia = data.atStartOfDay();
         LocalDateTime horaFinalDia = data.atTime(23, 59, 59);
 

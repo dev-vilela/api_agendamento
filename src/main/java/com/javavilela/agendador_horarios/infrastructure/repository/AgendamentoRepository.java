@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface AgendamentoRepository extends JpaRepository<AgendamenteEntity, Long> {
 
@@ -15,7 +16,7 @@ public interface AgendamentoRepository extends JpaRepository<AgendamenteEntity, 
     @Transactional
     void deleteByDataHoraAgendamentoAndCliente(LocalDateTime dataHoraAgendamento, String cliente);
 
-    AgendamenteEntity findByDataHoraAgendamentoBetween(LocalDateTime dataHoraIncial, LocalDateTime dataHoraFinal);
+   List<AgendamenteEntity>  findByDataHoraAgendamentoBetween(LocalDateTime dataHoraIncial, LocalDateTime dataHoraFinal);
 
     AgendamenteEntity findByDataHoraAgendamentoAndCliente(LocalDateTime dataHoraAgendamento, String cliente);
 
