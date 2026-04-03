@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN | PAINEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+       <!-- ADMIN VIEW (Escondido por padrão) -->
+    <section id="adminView" class="hidden min-h-screen pt-24 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+            
+            <!-- Botão Voltar -->
+            <button onclick="toggleAdminView()" class="mb-8 text-slate-400 hover:text-white flex items-center gap-2 transition-colors">
+                <i class="fas fa-arrow-left"></i> Voltar ao Site
+            </button>
+
+            <!-- Seção de Login / Cadastro -->
+            <div id="authContainer" class="max-w-md mx-auto bg-slate-900 p-8 rounded-2xl border border-slate-800 shadow-2xl">
+                <!-- Tabs -->
+                <div class="flex border-b border-slate-800 mb-8">
+                    <button onclick="switchAuthTab('login')" id="tabLogin" class="flex-1 py-3 text-amber-500 border-b-2 border-amber-500 font-bold">LOGIN</button>
+                    <button onclick="switchAuthTab('signup')" id="tabSignup" class="flex-1 py-3 text-slate-500 hover:text-white transition-colors font-bold">CADASTRO</button>
+                </div>
+
+                <!-- Form Login -->
+                <form id="loginForm" onsubmit="handleAuth(event, 'login')" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">E-mail</label>
+                        <input type="email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Senha</label>
+                        <input type="password" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-amber-500 outline-none">
+                    </div>
+                    <button class="w-full bg-amber-600 hover:bg-amber-700 py-4 rounded-lg font-bold uppercase tracking-widest transition-all">Entrar no Painel</button>
+                </form>
+
+                <!-- Form Cadastro -->
+                <form id="signupForm" onsubmit="handleAuth(event, 'signup')" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Nome Completo</label>
+                        <input type="text" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-1 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">E-mail</label>
+                        <input type="email" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-1 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Telefone</label>
+                        <input type="tel" required placeholder="(00) 00000-0000" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-1 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Especialidade</label>
+                        <select required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-1 focus:ring-amber-500">
+                            <option value="">Selecione...</option>
+                            <option>Cortes Modernos (Fade)</option>
+                            <option>Barba e Toalha Quente</option>
+                            <option>Cortes Clássicos</option>
+                            <option>Colorimetria</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Senha</label>
+                        <input type="password" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white outline-none focus:ring-1 focus:ring-amber-500">
+                    </div>
+                    <button class="w-full bg-amber-600 hover:bg-amber-700 py-3 rounded-lg font-bold uppercase tracking-widest transition-all mt-4">Criar Conta Admin</button>
+                </form>
+            </div>
+
+            <!-- PAINEL ADMIN (Aparece após login) -->
+            <div id="adminDashboard" class="hidden animate-fade-in">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-4">
+                    <div>
+                        <h2 class="text-4xl font-bold uppercase font-oswald italic">Painel de <span class="text-amber-500">Agendamentos</span></h2>
+                        <p class="text-slate-400 mt-2">Bem-vindo, Marco "The Blade". Aqui estão seus horários de hoje.</p>
+                    </div>
+                    <button onclick="logout()" class="bg-slate-800 hover:bg-red-900/40 text-slate-300 px-6 py-2 rounded-lg transition-all border border-slate-700">
+                        Sair do Painel
+                    </button>
+                </div>
+
+                <!-- Cards de Resumo -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                        <span class="text-slate-500 text-sm uppercase font-bold tracking-widest">Total Hoje</span>
+                        <p class="text-3xl font-bold mt-2">12 Agendamentos</p>
+                    </div>
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 border-l-4 border-l-amber-500">
+                        <span class="text-slate-500 text-sm uppercase font-bold tracking-widest">Próximo Cliente</span>
+                        <p class="text-3xl font-bold mt-2">14:30 - João Silva</p>
+                    </div>
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800">
+                        <span class="text-slate-500 text-sm uppercase font-bold tracking-widest">Receita Prevista</span>
+                        <p class="text-3xl font-bold mt-2 text-green-500">R$ 540,00</p>
+                    </div>
+                </div>
+
+                <!-- Tabela Elegante -->
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-slate-800/50 border-b border-slate-800">
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Cliente</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Serviço</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Data / Hora</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <!-- Linha 1 -->
+                                <tr class="hover:bg-slate-800/30 transition-colors group">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-amber-600/20 flex items-center justify-center text-amber-500 font-bold">JS</div>
+                                            <div>
+                                                <p class="font-bold">João Silva</p>
+                                                <p class="text-xs text-slate-500">(11) 98765-4321</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-medium text-slate-300">Corte + Barba</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="font-medium text-amber-500">Hoje, 14:30</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="flex items-center gap-2 text-green-500 text-sm font-medium">
+                                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Confirmado
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-500 hover:text-white transition-colors"><i class="fas fa-ellipsis-v"></i></button>
+                                    </td>
+                                </tr>
+                                <!-- Linha 2 -->
+                                <tr class="hover:bg-slate-800/30 transition-colors group">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 font-bold">RP</div>
+                                            <div>
+                                                <p class="font-bold">Ricardo Pereira</p>
+                                                <p class="text-xs text-slate-500">(11) 91234-5678</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-slate-800 rounded-full text-xs font-medium text-slate-300">Corte Social</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="font-medium">Hoje, 16:00</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="flex items-center gap-2 text-amber-500 text-sm font-medium">
+                                            <span class="w-2 h-2 rounded-full bg-amber-500"></span> Pendente
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-500 hover:text-white transition-colors"><i class="fas fa-ellipsis-v"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="/js/index.js"></script>
+</body>
+</html>

@@ -46,6 +46,10 @@ public class AgendamentoService {
        return agendamentoRepository.findByDataHoraAgendamentoBetween(primeiroHoraDia, horaFinalDia);
     }
 
+    public List<AgendamenteEntity> listarAgendamentos(){
+        return agendamentoRepository.findAll();
+    }
+
     public AgendamenteEntity alterarAgendamento(AgendamenteEntity agendamenteEntity, String cliente, LocalDateTime dataHoraAgendamento){
     AgendamenteEntity agenda = agendamentoRepository.findByDataHoraAgendamentoAndCliente(dataHoraAgendamento, cliente);
 
@@ -56,5 +60,16 @@ public class AgendamentoService {
         agendamenteEntity.setId(agenda.getId());
        return agendamentoRepository.save(agendamenteEntity);
     }
+
+    public AgendamenteEntity buscarPorId(Long id){
+        return agendamentoRepository.findById(id).orElseThrow(
+                ()-> new RuntimeException("Agendamento com ID " + id + " não encontrado!")
+        );
+    }
+
+    public void deletarAgendamento(Long id){
+        agendamentoRepository.deleteById(id);
+    }
+
 
 }
